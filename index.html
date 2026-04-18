@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>harold.wave | Music Producer</title>
+    <meta name="description" content="Portfolio of harold.wave - Hip Hop, Trap, and R&B Music Producer.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">harold.wave</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#beats">Beats</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#" id="login-nav-btn">Login</a></li>
+            <li id="user-display-li" class="hidden"><a href="#" id="logout-nav-btn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <header id="home" class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="glitch" data-text="harold.wave">harold.wave</h1>
+            <p class="tagline">Crafting the sound of tomorrow. Trap / Hip-Hop / R&B</p>
+            <a href="#beats" class="cta-btn">Listen Now</a>
+        </div>
+    </header>
+
+    <section id="beats" class="beats-section">
+        <h2>Latest Beats</h2>
+        <div class="track-list" id="track-list">
+            <!-- Tracks injected via JS -->
+        </div>
+    </section>
+    
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <h2>About The Producer</h2>
+            <p>Inspired by the moody aesthetics of Drake, PartyNextDoor, and Bryson Tiller, <strong>harold.wave</strong> delivers hard-hitting 808s, ethereal melodies, and undeniable bounce.</p>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <h2>Contact</h2>
+        <form id="contact-form" class="contact-form">
+            <input type="text" id="contact-name" placeholder="Your Name" required />
+            <input type="email" id="contact-email" placeholder="Your Email" required />
+            <textarea id="contact-message" placeholder="What's the project?" rows="5" required></textarea>
+            <button type="submit" class="cta-btn submit-btn">Send Message</button>
+            <p id="contact-status"></p>
+        </form>
+    </section>
+
+    <!-- Audio Player (Sticky Bottom) -->
+    <div class="audio-player" id="audio-player">
+        <div class="player-info">
+            <img src="assets/harold_logo.png" alt="Track Art" id="player-art" class="player-art hidden">
+            <div class="track-details">
+                <span id="player-title" class="player-title">Select a track</span>
+                <span id="player-tag" class="player-tag"></span>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button id="play-pause-btn" class="control-btn" disabled>▶</button>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2 id="modal-title">Join the Wave</h2>
+            <div class="auth-form">
+                <input type="email" id="email-input" placeholder="Email Address" />
+                <input type="password" id="password-input" placeholder="Password" />
+                <button id="email-login-btn" class="cta-btn auth-btn">Log In</button>
+                <button id="email-signup-btn" class="cta-btn auth-btn outline">Sign Up</button>
+                <div class="divider"><span>OR</span></div>
+                <button id="google-login-btn" class="cta-btn auth-btn google"><img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="google-icon"> Sign in with Google</button>
+                <p id="auth-error" class="error-msg"></p>
+                <p id="auth-success" class="success-msg"></p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
