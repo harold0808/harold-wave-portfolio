@@ -16,9 +16,9 @@ async function fetchTracks() {
     // If no tracks exist in DB yet, provide dummy ones for visual layout
     if (!data || data.length === 0) {
         tracks = [
-            { id: 1, title: "Midnight Drive", tags: ["Trap", "120 BPM"] },
-            { id: 2, title: "OVO Vibes", tags: ["R&B", "95 BPM"] },
-            { id: 3, title: "Toronto Lights", tags: ["Hip-Hop", "88 BPM"] }
+            { id: 1, title: "Midnight Drive", tags: ["Trap", "120 BPM"], audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { id: 2, title: "OVO Vibes", tags: ["R&B", "95 BPM"], audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+            { id: 3, title: "Toronto Lights", tags: ["Hip-Hop", "88 BPM"], audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
         ];
     } else {
         tracks = data;
@@ -28,6 +28,7 @@ async function fetchTracks() {
 
 const trackListEl = document.getElementById('track-list');
 const audioPlayerEl = document.getElementById('audio-player');
+const realAudioPlayer = document.getElementById('real-audio-player');
 const playerTitle = document.getElementById('player-title');
 const playerTag = document.getElementById('player-tag');
 const playPauseBtn = document.getElementById('play-pause-btn');
@@ -37,8 +38,6 @@ const playerArt = document.getElementById('player-art');
 
 let currentTrack = null;
 let isPlaying = false;
-let progressInterval = null;
-let simulatedProgress = 0;
 
 function renderTracks() {
     trackListEl.innerHTML = '';
@@ -79,12 +78,23 @@ function loadAndPlayTrack(track) {
     if(track.tags && Array.isArray(track.tags)) tagStr = track.tags.join(' • ');
     else if (track.bpm) tagStr = `${track.bpm} BPM`;
     playerTag.textContent = tagStr;
+    
+    // Update track art if available
+    if(track.image_url) {
+        playerArt.src = track.image_url;
+    } else {
+        playerArt.src = 'assets/harold_logo.png';
+    }
     playerArt.classList.remove('hidden');
+    
+    // Load audio
+    if(track.audio_url) {
+        realAudioPlayer.src = track.audio_url;
+    }
     
     audioPlayerEl.classList.add('active');
     playPauseBtn.disabled = false;
     
-    simulatedProgress = 0;
     progressBar.style.width = '0%';
     playTrack();
 }
@@ -92,21 +102,15 @@ function loadAndPlayTrack(track) {
 function playTrack() {
     isPlaying = true;
     playPauseBtn.textContent = '⏸';
-    clearInterval(progressInterval);
-    progressInterval = setInterval(() => {
-        simulatedProgress += 0.2; // Simulating progress
-        if(simulatedProgress >= 100) {
-            simulatedProgress = 0;
-            pauseTrack();
-        }
-        progressBar.style.width = `${simulatedProgress}%`;
-    }, 100);
+    if(realAudioPlayer.src) {
+        realAudioPlayer.play().catch(e => console.error("Audio play failed:", e));
+    }
 }
 
 function pauseTrack() {
     isPlaying = false;
     playPauseBtn.textContent = '▶';
-    clearInterval(progressInterval);
+    realAudioPlayer.pause();
 }
 
 playPauseBtn.addEventListener('click', () => {
@@ -114,13 +118,28 @@ playPauseBtn.addEventListener('click', () => {
     else if(currentTrack) playTrack();
 });
 
+// Update progress bar as audio plays
+realAudioPlayer.addEventListener('timeupdate', () => {
+    if (realAudioPlayer.duration) {
+        const progressPercent = (realAudioPlayer.currentTime / realAudioPlayer.duration) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+    }
+});
+
+// Reset when audio ends
+realAudioPlayer.addEventListener('ended', () => {
+    pauseTrack();
+    progressBar.style.width = '0%';
+    realAudioPlayer.currentTime = 0;
+});
+
 // Click on progress bar to seek
 progressContainer.addEventListener('click', (e) => {
-    if(!currentTrack) return;
+    if(!currentTrack || !realAudioPlayer.duration) return;
     const rect = progressContainer.getBoundingClientRect();
     const pos = (e.clientX - rect.left) / rect.width;
-    simulatedProgress = pos * 100;
-    progressBar.style.width = `${simulatedProgress}%`;
+    realAudioPlayer.currentTime = pos * realAudioPlayer.duration;
+    progressBar.style.width = `${pos * 100}%`;
 });
 
 // Authentication UI Logic
